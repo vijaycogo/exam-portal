@@ -28,28 +28,22 @@ STEP 1: rvm install jruby-9.3.3.0
 
 STEP 2: rvm list 
 
-STEP 3: rvm --default jruby-9.3.3.0 
+STEP 3: rvm use jruby-9.3.3.0 
 
-STEP 4: rvm use jruby-9.3.3.0 
+STEP 4: brew install gems 
 
-STEP 5: brew install gems 
-
-STEP 6: sudo gem install rails:6.0.2.1
+STEP 5: sudo gem install rails:6.0.2.1
 
 ## Check version
 - **ruby --version**:
 - **sqlite3 --version**: 
 ## Getting Started
 
-STEP 7: bundle install  // Inside the project directory code_hall
+STEP 6: bundle install  // Inside the project directory exam-portal
 
-STEP 8: rails db:migrate
+STEP 7: rails db:migrate
 
-STEP 9: rails webpacker:install  //Ensure Webpacker is correctly set up
-
-STEP 10: rails assets:precompile //Compile your assets:
-
-STEP 11: rails s
+STEP 10: rails s
 
 STEP 11: rails db:seed  //for creating collage exam and exam window data.
 

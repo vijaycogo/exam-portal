@@ -2,13 +2,13 @@ class EnrollUserController < ApplicationController
   before_action :valid_params, :check_college_existence, :check_college_exam_related
 
   def enroll_user
-    user = User.new(create_params)
+    @user = User.new(create_params)
     
-    if user.save
-      response_message = { message: "User enrolled to the test successfully" }
+    if @user.save
+      response_message = { response: "User enrolled to the test successfully" }
       response_status = 200
-    else 
-      response_message = { message: "Failed to create the test for user: #{params[:first_name]}" }.merge!(user.errors)
+    else
+      response_message = { response: "Failed to create the test for user: #{params[:first_name]}" }.merge!(@user.errors)
       response_status = 400
     end
 
@@ -79,8 +79,7 @@ class EnrollUserController < ApplicationController
     return false if exam.nil?
   
     exam_college_related = exam.college.present?
-  
-    within_time = params[:start_time] >= exam.exam_window.first.start_time && params[:start_time] <= exam.exam_window.first.end_time
+    within_time = params[:start_time] >= exam.exam_window.first.start_time.to_s && params[:start_time] <= exam.exam_window.first.end_time.to_s
   
     exam_college_related && within_time
   end
