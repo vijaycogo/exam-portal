@@ -5,16 +5,20 @@ class EnrollUserController < ApplicationController
     @user = User.new(create_params)
     
     if @user.save
-      response_message = { response: "User enrolled to the test successfully" }
+      @response_message = { response: "User enrolled to the test successfully" }
       response_status = 200
     else
-      response_message = { response: "Failed to create the test for user: #{params[:first_name]}" }.merge!(@user.errors)
+      @response_message = { response: "Failed to create the test for user: #{params[:first_name]}" }.merge!(@user.errors)
       response_status = 400
     end
 
-    log_request_response(response_message, response_status)
+    log_request_response(response_status)
 
-    render json: { message: response_message }, status: response_status
+    if request.format.html?
+      render 'enroll_user/response_page'
+    else
+      render json: { message: @response_message }, status: response_status
+    end
   end
 
   def create_params
@@ -84,10 +88,10 @@ class EnrollUserController < ApplicationController
     exam_college_related && within_time
   end
 
-  def log_request_response(response_message, response_status)
+  def log_request_response(response_status)
     RequestResponseLog.create(
       request_params: params,
-      response: response_message,
+      response: @response_message,
       request_time: Time.now,
       status_code: response_status
     )
