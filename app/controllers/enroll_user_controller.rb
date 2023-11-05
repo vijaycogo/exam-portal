@@ -5,13 +5,17 @@ class EnrollUserController < ApplicationController
     @user = User.new(create_params)
     
     if @user.save
-      @response_message = { response: "User enrolled to the test successfully" }
+      @response_message = { response: "User: #{params[:first_name]} enrolled to the test successfully" }
       response_status = 200
     else
       @response_message = { response: "Failed to create the test for user: #{params[:first_name]}" }.merge!(@user.errors)
       response_status = 400
     end
 
+    send_response(response_status)
+  end
+
+  def send_response(response_status)
     log_request_response(@response_message, response_status)
 
     if request.format.html?
@@ -35,42 +39,35 @@ class EnrollUserController < ApplicationController
   private
 
   def valid_params
-    unless validate_params?
-      error = { message: "Required parameters are missing" }
-      status = 400
-
-      log_request_response(error, status)
-
-      render json: error, status: status
+    required_keys = [:first_name, :last_name, :phone_number, :college_id, :exam_id, :start_time]
+    permitted_params = params.permit(required_keys)
+    missing_keys = required_keys.select { |key| !permitted_params[key].present? }
+    
+    if missing_keys.present?
+      @response_message =  { response: "#{missing_keys} are missing" }
+      response_status = 400
+      send_response(response_status)
     end
   end
 
   def check_college_existence
     unless college_exist?
-      error =  { error: "College with id: #{params[:college_id]} doesn't exist" }
-      status = 400
+      @response_message = { response: "College with id: #{params[:college_id]} doesn't exist" }
+      
+      response_status = 400
 
-      log_request_response(error, status)
-
-      render json: error, status: status
+      send_response(response_status)
     end
   end
 
   def check_college_exam_related
     unless college_exam_related?
-      error =  { error: "#{params[:exam_id]} is invalid or unassociated with the college" }
-      status = 400
+      @response_message =  { response: "Exam id: #{params[:exam_id]} is invalid or unassociated with the college" }
 
-      log_request_response(error, status)
+      response_status = 400
 
-      render json: error, status: status
+      send_response(response_status)
     end
-  end
-
-  def validate_params?
-    required_keys = [:first_name, :last_name, :phone_number, :college_id, :exam_id, :start_time]
-    permitted_params = params.permit(required_keys)
-    required_keys.all? { |key| permitted_params[key].present? }
   end
 
   def college_exist?
@@ -83,7 +80,12 @@ class EnrollUserController < ApplicationController
     return false if exam.nil?
   
     exam_college_related = exam.college.present?
-    within_time = params[:start_time] >= exam.exam_window.first.start_time.to_s && params[:start_time] <= exam.exam_window.first.end_time.to_s
+    return false unless exam_college_related
+    
+    exam_window = exam.exam_window.first
+    return false if exam_window.blank?
+
+    within_time = params[:start_time] >= exam_window.start_time.to_s && params[:start_time] <= exam_window.end_time.to_s
   
     exam_college_related && within_time
   end

@@ -1,12 +1,22 @@
-
-<div class="response-message" 
-        style="color: #FF1493; 
-        font-size: 60px;
-        text-align: center;
-        background-color: #fff;
-        padding: 10px;
-        border-radius: 10px;
-        ">
-  <%= @response_message[:response] %>
+<div class="response-message" style="text-align: center; background-color: #fff; padding: 10px; border-radius: 10px;">
+  <div style="color: #FF1493; font-size: 60px;">
+    <%= @response_message[:response] %>
+  </div>
+  <ul style="list-style-type: none;">
+    <% @response_message.each do |key, value| %>
+      <li>
+        <strong><%= key %>:</strong>
+        <% if value.is_a?(Array) %>
+          <% value.each_with_index do |item, index| %>
+            <%= item %>
+            <% unless index == value.length - 1 %>
+              <span style="color: #FF1493;">,</span>
+            <% end %>
+          <% end %>
+        <% else %>
+          <%= value %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
 </div>
-
