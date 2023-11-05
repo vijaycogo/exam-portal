@@ -12,7 +12,7 @@ class EnrollUserController < ApplicationController
       response_status = 400
     end
 
-    log_request_response(response_status)
+    log_request_response(@response_message, response_status)
 
     if request.format.html?
       render 'enroll_user/response_page'
@@ -88,10 +88,10 @@ class EnrollUserController < ApplicationController
     exam_college_related && within_time
   end
 
-  def log_request_response(response_status)
+  def log_request_response(response, response_status)
     RequestResponseLog.create(
       request_params: params,
-      response: @response_message,
+      response: response,
       request_time: Time.now,
       status_code: response_status
     )

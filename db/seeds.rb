@@ -27,16 +27,16 @@ Exam.create(college_id: college_3.id, exam_name: 'Gate')
 
 # Seed data for the "exam_windows" table
 exam_1 = Exam.find_by(exam_name: 'Midterm Exam')
-ExamWindow.create(exam_id: exam_1.id, start_time: Time.now, end_time: Time.now + 1.hour)
+ExamWindow.create(exam_id: exam_1.id, start_time: Time.now - 1.hours, end_time: Time.now + 3.days)
 
 exam_2 = Exam.find_by(exam_name: 'Final Exam')
-ExamWindow.create(exam_id: exam_2.id, start_time: Time.now + 2.hours, end_time: Time.now + 3.hours)
+ExamWindow.create(exam_id: exam_2.id, start_time: Time.now - 2.hours, end_time: Time.now + 3.days)
 
 exam_3 = Exam.find_by(exam_name: 'Semester Test')
-ExamWindow.create(exam_id: exam_3.id, start_time: Time.now - 1.day, end_time: Time.now)
+ExamWindow.create(exam_id: exam_3.id, start_time: Time.now - 1.day, end_time: Time.now + 3.days)
 
 exam_4 = Exam.find_by(exam_name: 'Annual Exam')
-ExamWindow.create(exam_id: exam_4.id, start_time: Time.now + 1.day, end_time: Time.now + 2.days)
+ExamWindow.create(exam_id: exam_4.id, start_time: Time.now - 2.day, end_time: Time.now + 2.days)
 
 
 exam_5 = Exam.find_by(exam_name: 'JEE')
@@ -44,6 +44,3 @@ ExamWindow.create(exam_id: exam_3.id, start_time: Time.now - 1.day, end_time: Ti
 
 exam_6 = Exam.find_by(exam_name: 'Gate')
 ExamWindow.create(exam_id: exam_4.id, start_time: Time.now + 1.day, end_time: Time.now + 2.days)
-
-
-
